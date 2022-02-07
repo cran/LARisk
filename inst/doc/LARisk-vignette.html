@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>LARisk: An R package for Lifetime Attributable Risk Calculation</title>
+
+<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">LARisk: An R package for Lifetime Attributable Risk Calculation</h1>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>The R package, <code>LARisk</code>, to compute lifetime attributable risk (LAR) of radiation-induced cancer can be helpful with enhancement of the flexibility in research of projected risks of radiation-associated cancers. <code>LARisk</code> produces LAR estimates considering various options or arguments. In addition, it is possible to handle large-size data easily and compute LAR values by the group such as occupation, sex, age, group, etc., which can provide research topics for radiation-associated cancer risk.</p>
+<p><br> This document provides a detailed description of the <code>LARisk</code> package with some examples. If the package is installed, then we can load it into an R session by</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(LARisk)</span></code></pre></div>
+<p><br><br></p>
+</div>
+<div id="arguments-of-the-lar-function" class="section level2">
+<h2>Arguments of the <code>LAR</code> function</h2>
+<p>The <code>LARisk</code> package has 3 main functions for estimating lifetime attributable risk such as <code>LAR</code>, <code>LAR_batch</code> and <code>LAR_group</code>. <code>LAR</code> is a basic function to compute individual LAR values. And the others are extended functions to handle large batch data and calculate LAR estimates by group. The description of each function is in <strong>Functions for estimating LAR</strong>.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">LAR</span>(data, basedata, <span class="at">sim=</span><span class="dv">300</span>, <span class="at">seed=</span><span class="dv">99</span>, <span class="at">current=</span><span class="fu">as.numeric</span>(<span class="fu">substr</span>(<span class="fu">Sys.Date</span>(),<span class="dv">1</span>,<span class="dv">4</span>)),</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">ci=</span><span class="fl">0.9</span>, <span class="at">weight=</span><span class="cn">NULL</span>, <span class="at">DDREF=</span><span class="cn">TRUE</span>, <span class="at">basepy=</span><span class="fl">1e+05</span>)</span></code></pre></div>
+<p>The following table shows the arguments of the <code>LAR</code> function.</p>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Arguments</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>data</td>
+<td>A data frame containing demographic and exposure information</td>
+</tr>
+<tr class="even">
+<td>basedata</td>
+<td>A list of data of lifetime and incidence rate tables</td>
+</tr>
+<tr class="odd">
+<td>sim</td>
+<td>A scalar for the number of iteration</td>
+</tr>
+<tr class="even">
+<td>seed</td>
+<td>A scalar for a random seed number</td>
+</tr>
+<tr class="odd">
+<td>current</td>
+<td>A scalar for a current year</td>
+</tr>
+<tr class="even">
+<td>ci</td>
+<td>A scalar for confidence level to compute confidence intervals for LAR estimates</td>
+</tr>
+<tr class="odd">
+<td>weight</td>
+<td>A list containing values on [0,1] to compute LAR values based on ERR and EAR models for each cancer site</td>
+</tr>
+<tr class="even">
+<td>DDREF</td>
+<td>Logical. Whether apply the dose and dose-rate effectiveness factor for chronic exposure</td>
+</tr>
+<tr class="odd">
+<td>basepy</td>
+<td>A scalar for the number of base person-years</td>
+</tr>
+</tbody>
+</table>
+<div id="data" class="section level3">
+<h3>data</h3>
+<p>The <strong>data</strong> should have some prerequisite information such as <strong>sex</strong> and birth year(s) (<strong>birth</strong>), exposure year (<strong>exposure</strong>), exposed dose distributions (<strong>dosedist</strong>), fixed exposed radiation dose or parameters of dose distributions (<strong>dose1</strong>, <strong>dose2</strong>, <strong>dose3</strong>), sites where exposed (<strong>site</strong>), and exposure rate (<strong>exposure_rate</strong>). The name of variables in data should be written as expressed.</p>
+<p>The following table expresses the essential variables of the argument, <strong>data</strong>.</p>
+<table>
+<colgroup>
+<col width="15%" />
+<col width="84%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variables</th>
+<th>Format</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>sex</td>
+<td>one of the character strings ‘<em>male</em>’ or ‘<em>female</em>’</td>
+</tr>
+<tr class="even">
+<td>birth</td>
+<td>numeric</td>
+</tr>
+<tr class="odd">
+<td>expposure</td>
+<td>numeric</td>
+</tr>
+<tr class="even">
+<td>site</td>
+<td>one of the chracter strings ‘<em>stomach</em>’, ‘<em>colon</em>’, ‘<em>liver</em>’, ‘<em>lung</em>’, ‘<em>breast</em>’, ‘<em>ovary</em>’, ‘<em>uterus</em>’, ‘<em>prostate</em>’, ‘<em>bladder</em>’, ‘<em>brain/cns</em>’, ‘<em>thyroid</em>’, ‘<em>remainder</em>’, ‘<em>oral</em>’, ‘<em>oesophagus</em>’, ‘<em>rectum</em>’, ‘<em>gallbladder</em>’, ‘<em>pancreas</em>’, ‘<em>kidney</em>’, ‘<em>leukemia</em>’.</td>
+</tr>
+<tr class="odd">
+<td>exposure_rate</td>
+<td>one of the character strings ‘<em>chronic</em>’ or ‘<em>acute</em>’</td>
+</tr>
+<tr class="even">
+<td>dosedist</td>
+<td>one of the character strings ‘<em>fixedvalue</em>’, ‘<em>lognormal</em>’, ‘<em>normal</em>’, ‘<em>triangular</em>’, ‘<em>logtriangular</em>’, ‘<em>uniform</em>’, ‘<em>loguniform</em>’</td>
+</tr>
+<tr class="odd">
+<td>dose1</td>
+<td>numeric</td>
+</tr>
+<tr class="even">
+<td>dose2</td>
+<td>numeric</td>
+</tr>
+<tr class="odd">
+<td>dose3</td>
+<td>numeric</td>
+</tr>
+</tbody>
+</table>
+<p>Because <code>LAR</code> is the function for each object, it is logically trivial that all <strong>sex</strong> and <strong>birth</strong> are same. Also, since the event dates of exposure must occur after the birth date, <strong>exposure</strong> should be larger than <strong>birth</strong>.</p>
+<p><br></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ex_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">sex =</span> <span class="st">&#39;male&#39;</span>, <span class="at">birth =</span> <span class="dv">1900</span>, <span class="at">exposure =</span> <span class="dv">1980</span>,</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">site =</span> <span class="st">&#39;stomach&#39;</span>, <span class="at">exposure_rate =</span> <span class="st">&quot;chronic&quot;</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">dosedist =</span> <span class="st">&#39;fixedvalue&#39;</span>, <span class="at">dose1 =</span> <span class="dv">10</span>, <span class="at">dose2=</span><span class="cn">NA</span>, <span class="at">dose3=</span><span class="cn">NA</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">LAR</span>(ex_data, <span class="at">basedata=</span><span class="fu">list</span>(life2010, incid2010)) <span class="do">## error</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error in check_data(data, current): Age is not allowed to be greater than 100 years.</span></span></code></pre></div>
+<p>The maximum age in the function is set as 100 years old. If the data contains a birth year which makes attained age over 100, it occurs error.</p>
+<p><br> For <strong>site</strong>, we put the irradiated organ site or cancer-site. <code>LAR</code> estimates excess cases with the site as ‘<em>stomach</em>’, ‘<em>colon</em>’, ‘<em>liver</em>’, ‘<em>lung</em>’, ‘<em>breast</em>’, ‘<em>ovary</em>’, ‘<em>uterus</em>’, ‘<em>prostate</em>’, ‘<em>bladder</em>’, ‘<em>brain/cns</em>’, ‘<em>thyroid</em>’, ‘<em>remainder</em>’, ‘<em>oral</em>’, ‘<em>oesophagus</em>’, ‘<em>rectum</em>’, ‘<em>gallbladder</em>’, ‘<em>pancreas</em>’, ‘<em>kidney</em>’, ‘<em>leukemia</em>’. In particular, <strong>site</strong> that are applicable in <code>LAR</code> differ by gender(<strong>sex</strong>). For <em>male</em>, ‘<em>breast</em>’, ‘<em>ovary</em>’ and ‘<em>uterus</em>’ are not allowed. Similarly, for <em>female</em>, ‘<em>prostate</em>’ is not allowed.</p>
+<p><br> In <strong>dosedist</strong>, we insert the distribution of the exposed dose. It can have ‘<em>fixedvalue</em>’, ‘<em>lognormal</em>’, ‘<em>normal</em>’, ‘<em>triangular</em>’, ‘<em>logtriangular</em>’, ‘<em>uniform</em>’ or ‘<em>loguniform</em>’. Each distribution demands essential parameters. For instance, if the exposed dose has a normal distribution with the mean of 2.3 and the standard deviation of 0.8, we input <code>dose1=2.3</code>, <code>dose2=0.8</code> and <code>dose3=NA</code>. If the dose has the fixed value of 3.2, we add values as<code>dose1=3.2</code>, <code>dose2=NA</code> and <code>dose3=NA</code>.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="center">dose distribution</th>
+<th align="center">dose1</th>
+<th align="center">dose2</th>
+<th align="center">dose3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">fixedvalue</td>
+<td align="center">value</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+</tr>
+<tr class="even">
+<td align="center">lognormal</td>
+<td align="center">median</td>
+<td align="center">geometric standard deviation</td>
+<td align="center">NA</td>
+</tr>
+<tr class="odd">
+<td align="center">normal</td>
+<td align="center">mean</td>
+<td align="center">standard deviation</td>
+<td align="center">NA</td>
+</tr>
+<tr class="even">
+<td align="center">triangular</td>
+<td align="center">minimum</td>
+<td align="center">mode</td>
+<td align="center">maximum</td>
+</tr>
+<tr class="odd">
+<td align="center">logtriangular</td>
+<td align="center">minimum</td>
+<td align="center">mode</td>
+<td align="center">maximum</td>
+</tr>
+<tr class="even">
+<td align="center">uniform</td>
+<td align="center">minimum</td>
+<td align="center">maximum</td>
+<td align="center">NA</td>
+</tr>
+<tr class="odd">
+<td align="center">loguniform</td>
+<td align="center">minimum</td>
+<td align="center">maximum</td>
+<td align="center">NA</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+</div>
+<div id="basedata" class="section level3">
+<h3>basedata</h3>
+<p>The <code>LAR</code> and the other extended functions need lifetime and cancer incidence rate tables. We put these tables to the argument ‘<strong>basedata</strong>’ in which the first element is lifetime table and the second element is cancer incidence rate table.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">LAR</span>(data,</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">basedata =</span> <span class="fu">list</span>(<span class="st">&quot;the first is lifetime table&quot;</span>, <span class="st">&quot;the second is cancer incidence rate table&quot;</span>))</span></code></pre></div>
+<p><code>LARisk</code> includes these tables which were made in 2010 and 2018 in Korea: <code>life2010</code>, <code>incid2010</code>, <code>life2018</code> and <code>incid2018</code>. Thus we can estimate the risk for the Korean population in 2010 or 2018 using these tables.</p>
+<p>If we want to estimate the risks of the other population, we’ll need the lifetime and cancer incidence rate tables of the population. Similar to <strong>data</strong>, lifetime and cancer incidence rate tables must follow the specified format.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(life2010)      <span class="do">## lifetime table of the Korean in 2010.</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Age Prob_d_m Prob_d_f</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1   0  0.00369  0.00275</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2   1  0.00032  0.00030</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3   2  0.00025  0.00022</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4   3  0.00018  0.00015</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5   4  0.00015  0.00011</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6   5  0.00013  0.00009</span></span></code></pre></div>
+<p>The columns of a lifetime table are consist of ‘<em>Age</em>’, ‘<em>Prob_d_m</em>’, and ‘<em>Prob_d_f</em>’. <em>Prob_d_m</em> and <em>Prob_d_f</em> are the probabilities of death of male and female, respectively.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(incid2010)     <span class="do">## cancer incidence rate table of the Korean in 2010.</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Site Age Rate_m Rate_f</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 oral   0    0.2    0.1</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 oral   1    0.2    0.1</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 oral   2    0.2    0.1</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 oral   3    0.2    0.1</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 oral   4    0.2    0.1</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 oral   5    0.2    0.2</span></span></code></pre></div>
+<p>Also, the columns of a cancer incidence rate table consist of ‘<em>Site</em>’, ‘<em>Age</em>’, ‘<em>Rate_m</em>’, and ‘<em>Rate_f</em>’. <em>Rate_m</em> and <em>Rate_f</em> are incidence rates of each cancer site of male and female, respectively. The tables should have the range of age from 0 to 100 one by one.</p>
+<p><br></p>
+</div>
+<div id="weight" class="section level3">
+<h3>weight</h3>
+<p><strong>weight</strong> is used to estimate LAR through the weighted average of LAR estimates based on ERR and EAR models. It has the form of list whose name of elements is site to decide organ and values of them is for a specific value of the weight. For example, if a weight of stomach cancer is 0.5, run the below code.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">LAR</span>(data, basedata, <span class="at">weight=</span><span class="fu">list</span>(<span class="at">stomach =</span> <span class="fl">0.5</span>))</span></code></pre></div>
+<p><code>LAR</code> sets the default weight to 0.7 in most cancers. However, in lung cancer, the weight is 0.3, and cancers of breast and thyroid only have weights of 1 for LAR functions based on EAR or ERR models, respectively (see below table).</p>
+<table>
+<thead>
+<tr class="header">
+<th align="center">Cancer site</th>
+<th align="right">LAR_ERR</th>
+<th align="right">LAR_EAR</th>
+<th align="right">weight</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">Most cancer</td>
+<td align="right">70%</td>
+<td align="right">30%</td>
+<td align="right">0.7</td>
+</tr>
+<tr class="even">
+<td align="center">Lung</td>
+<td align="right">30%</td>
+<td align="right">70%</td>
+<td align="right">0.3</td>
+</tr>
+<tr class="odd">
+<td align="center">Breast</td>
+<td align="right">0%</td>
+<td align="right">100%</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="center">Thyroid</td>
+<td align="right">100%</td>
+<td align="right">0%</td>
+<td align="right">1.0</td>
+</tr>
+<tr class="odd">
+<td align="center">Gallbladder</td>
+<td align="right">100%</td>
+<td align="right">0%</td>
+<td align="right">1.0</td>
+</tr>
+<tr class="even">
+<td align="center">Brain/CNS</td>
+<td align="right">100%</td>
+<td align="right">0%</td>
+<td align="right">1.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="ddref" class="section level3">
+<h3>DDREF</h3>
+<p><strong>DDREF</strong> (dose and dose-rate effectiveness factor) is the logical option to select whether or not to consider DDREF in the LAR calculation. DDREF is to modify the effect of exposure, especially, for low-dose exposure. In addition, DDREF is considered differently according to exposure rate. However, if the site is leukemia, DDREF dose not apply even if <code>DDREF = TRUE</code>.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>ex_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">sex =</span> <span class="st">&#39;male&#39;</span>, <span class="at">birth =</span> <span class="dv">1990</span>, <span class="at">exposure =</span> <span class="dv">2015</span>,</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">site =</span> <span class="st">&#39;leukemia&#39;</span>, <span class="at">exposure_rate =</span> <span class="st">&quot;chronic&quot;</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">dosedist =</span> <span class="st">&#39;fixedvalue&#39;</span>, <span class="at">dose1 =</span> <span class="dv">10</span>, <span class="at">dose2=</span><span class="cn">NA</span>, <span class="at">dose3=</span><span class="cn">NA</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">LAR</span>(ex_data, <span class="at">basedata=</span><span class="fu">list</span>(life2010, incid2010), <span class="at">DDREF=</span><span class="cn">TRUE</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; LAR: </span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Lower    Mean   Upper </span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2.6587  5.9803 13.4514 </span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Future LAR: </span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          Lower     Mean    Upper</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; F.LAR   2.5882   5.8191  13.0830</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; BFR   538.7711 538.7711 538.7711</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; TFR   541.3593 544.5902 551.8542</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="fu">LAR</span>(ex_data, <span class="at">basedata=</span><span class="fu">list</span>(life2010, incid2010), <span class="at">DDREF=</span><span class="cn">FALSE</span>) <span class="do">## the result are same</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; LAR: </span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Lower    Mean   Upper </span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2.6587  5.9803 13.4514 </span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Future LAR: </span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          Lower     Mean    Upper</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; F.LAR   2.5882   5.8191  13.0830</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; BFR   538.7711 538.7711 538.7711</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; TFR   541.3593 544.5902 551.8542</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span></code></pre></div>
+</div>
+<div id="other-arguments" class="section level3">
+<h3>other arguments</h3>
+<p><strong>seed</strong> is the random seed number. As long as the same seed number is provided, we obtain the same result in anytime. <strong>sim</strong> is the number of simulation runs. Note that as <strong>sim</strong> goes larger, the computation time takes longer although the simulation variation is getting smaller. i.e., even though <strong>seed</strong> is different, the large <strong>sim</strong> yields a similar outcome. In <code>LARisk</code>, <code>sim=300</code> is default. <strong>basepy</strong> is the baseline person year such as 10,000 person year or 100,000 person year.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">LAR</span>(data, basedata, <span class="at">seed=</span><span class="dv">1111</span>)    <span class="do">## changing seed number, the result is also changed</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">LAR</span>(data, basedata, <span class="at">sim=</span><span class="dv">1000</span>)     <span class="do">## the large &#39;sim&#39; offers a stable simulation result</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">LAR</span>(data, basedata, <span class="at">basepy=</span><span class="fl">1e+03</span>) <span class="do">## setting the baseline person-year is 1000</span></span></code></pre></div>
+<p><strong>current</strong> is the year to set as the moment of estimation. The default value is set as the system time of the computer. Since it is considered as the current year, we can change the option if we want to set the current time into other years. It recommends that the value should be in form of a year in 4 digits.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">LAR</span>(data, basedata, <span class="at">current=</span><span class="dv">2019</span>) <span class="do">## setting the current year is 2019</span></span></code></pre></div>
+<p>Changing the current time affects the estimation of future lifetime attributable risk and future baseline risk.</p>
+<p><br> <strong>ci</strong> is the level of significance to provide the confidence interval of LAR estimates, expressed in number between 0 and 1. The default value is 0.9, in other words, the <code>LAR</code> function provides the confidence interval at 90% level of significance in default setting.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">LAR</span>(data, basedata, <span class="at">ci=</span><span class="fl">0.8</span>) <span class="do">## setting the confidence level is 0.8</span></span></code></pre></div>
+<p><br><br></p>
+</div>
+</div>
+<div id="functions-for-estimating-lar" class="section level2">
+<h2>Functions for estimating LAR</h2>
+<p>As mentioned above, the package <code>LARisk</code> includes 3 main functions <code>LAR</code>, <code>LAR_batch</code>, and <code>LAR_group</code> that estimate the LAR values for various cases. These functions can be used for a variety of purposes by users. The functions give the three kinds of estimates such as lifetime risk, future risk and lifetime baseline risk. <code>LAR</code> and <code>F_LAR</code> are represented as LAR and future LAR estimates with confidence limits (lower and upper) for each cancer site, solid cancer and total.</p>
+<p>We will use the toy example data ‘nuclear’ in this section, which is simulated with the assumption that all people are exposed to radiation at the same time (Details on this data are in “<strong>APPENDIX: Datasets in </strong><code>LARisk</code>”).</p>
+<div id="lar-the-function-of-estimating-lar-for-one-person" class="section level3">
+<h3><code>LAR</code>: the function of estimating LAR for one person</h3>
+<p><code>LAR</code> is the function to estimate LAR for one person. It returns an object of class <code>LAR</code>. <code>LAR</code> class contains the risks of the person, information of the person (gender and birth-year), and some options for calculating risks. The following is the table of components in the <code>LAR</code> object.</p>
+<table>
+<colgroup>
+<col width="8%" />
+<col width="91%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Values</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>LAR</td>
+<td>Lifetime attributable risk (LAR) from the time of exposure to the end of the expected lifetime</td>
+</tr>
+<tr class="even">
+<td>F_LAR</td>
+<td>Future attributable risk from current to the expected lifetime</td>
+</tr>
+<tr class="odd">
+<td>LBR</td>
+<td>Lifetime baseline risk</td>
+</tr>
+<tr class="even">
+<td>BFR</td>
+<td>Baseline future risk</td>
+</tr>
+<tr class="odd">
+<td>LFR</td>
+<td>Lifetime fractional risk</td>
+</tr>
+<tr class="even">
+<td>TFR</td>
+<td>Total future risk</td>
+</tr>
+<tr class="odd">
+<td>current</td>
+<td>Current year</td>
+</tr>
+<tr class="even">
+<td>ci</td>
+<td>Confidence level</td>
+</tr>
+<tr class="odd">
+<td>pinfo</td>
+<td>Information of the person</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>nuclear1 <span class="ot">&lt;-</span> nuclear[nuclear<span class="sc">$</span>ID<span class="sc">==</span><span class="st">&quot;ID01&quot;</span>,]</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(nuclear1)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     ID    sex birth exposure       site exposure_rate   dosedist    dose1 dose2</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 ID01 female  1973     2011      ovary         acute fixedvalue 50.06989    NA</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 ID01 female  1973     2011 oesophagus         acute fixedvalue 50.37462    NA</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 ID01 female  1973     2011    bladder         acute fixedvalue 52.46040    NA</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 ID01 female  1973     2011       lung         acute fixedvalue 55.69177    NA</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 ID01 female  1973     2011  remainder         acute fixedvalue 51.64678    NA</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 ID01 female  1973     2011     rectum         acute fixedvalue 49.37011    NA</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7 ID01 female  1973     2011    thyroid         acute fixedvalue 54.14875    NA</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   dose3 distance</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1    NA        1</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2    NA        1</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3    NA        1</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4    NA        1</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5    NA        1</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6    NA        1</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7    NA        1</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="fu">LAR</span>(nuclear1, <span class="at">basedata =</span> <span class="fu">list</span>(life2010, incid2010))</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; LAR: </span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     Lower      Mean     Upper </span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  359.9479  671.3751 1203.8111 </span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Future LAR: </span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;            Lower       Mean     Upper</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; F.LAR   337.3697   597.7655  1032.216</span></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; BFR   15992.9219 15992.9219 15992.922</span></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; TFR   16330.2917 16590.6874 17025.137</span></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span></code></pre></div>
+<p>The <code>LAR</code> object prints the total LAR , total future LAR, total baseline future risk, and total future risk. If you want the more detailed results, you can use the <code>summary</code> function.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">LAR</span>(nuclear1, <span class="at">basedata =</span> <span class="fu">list</span>(life2010, incid2010)))</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Information: </span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     sex birth</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  female  1973</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; LAR: </span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;               Lower     Mean     Upper        LBR    LFR</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; lung        74.5065 156.5247  241.1717  3630.3464 0.0431</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ovary        4.4880  13.3756   27.6491   697.6095 0.0192</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; bladder     13.0799  30.4405   58.7444   452.0590 0.0673</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; thyroid     83.9986 368.7603  877.5446  7318.8901 0.0504</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; remainder   33.5177  89.1794  169.3327  4237.3935 0.0210</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; oesophagus   0.2000   4.0450   10.4666   116.7920 0.0346</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; rectum       0.2670   9.0496   21.7567  2157.6294 0.0042</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; leukemia     0.0000   0.0000    0.0000     0.0000    NaN</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; solid      359.9479 671.3751 1203.8111 18610.7199 0.0361</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; total      359.9479 671.3751 1203.8111 18610.7199 0.0361</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Future LAR: </span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;               Lower     Mean     Upper        BFR        TFR</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; lung        73.4884 154.5469  238.6027  3574.2001  3728.7470</span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ovary        4.0861  12.0693   25.2806   597.5191   609.5885</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; bladder     13.0173  30.3006   58.5236   452.9404   483.2410</span></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; thyroid     68.7104 303.3691  745.8708  5117.1159  5420.4850</span></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; remainder   32.3341  84.9052  160.5547  4066.5835  4151.4887</span></span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; oesophagus   0.1978   3.9420   10.2253   115.9270   119.8690</span></span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; rectum       0.2558   8.6324   20.6083  2068.6359  2077.2682</span></span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; leukemia     0.0000   0.0000    0.0000     0.0000     0.0000</span></span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; solid      337.3697 597.7655 1032.2155 15992.9219 16590.6874</span></span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; total      337.3697 597.7655 1032.2155 15992.9219 16590.6874</span></span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Confidence Level: 0.9</span></span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Current Year: 2022</span></span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span></code></pre></div>
+<p>The <code>suumary</code> function provides the person’s gender and year of birth, risks by cancer type, confidence levels, and current year. In <code>summary</code> results, the LAR tab includes site-specific LAR, lifetime baseline risk (LBR), and lifetime fractional risk (LFR). Also, the Future LAR tab contains site-specific future LAR, baseline future risk (BFR), and total future risk (TFR).</p>
+<p><br></p>
+</div>
+<div id="lar_batch-the-function-of-estimating-lar-for-several-people" class="section level3">
+<h3><code>LAR_batch</code>: the function of estimating LAR for several people</h3>
+<p>If you want to consider more than one person, you can use <code>LAR&#39;. But, for large observations, the</code>LAR_batch<code>function is useful. Unlike</code>LAR`, it calculates each persons’ risks after reading multiple people’s data at once.</p>
+<p>Since data contains more than one person, the function requires an argument to distinguish each person. <code>pid</code> is the argument, which is a vector to distinguish each person in the dataset. For example, suppose that we want to calculate LAR estimates of several people in the <code>nuclear</code> dataset. Since the variable “ID” is the person ID for this data, we can estimate the LAR values as follows.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>ex_batch <span class="ot">&lt;-</span> <span class="fu">LAR_batch</span>(nuclear, <span class="at">pid=</span>nuclear<span class="sc">$</span>ID, <span class="at">basedata =</span> <span class="fu">list</span>(life2010, incid2010))</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(ex_batch)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;LAR_batch&quot; &quot;LAR&quot;</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(ex_batch[[<span class="dv">1</span>]])</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;LAR&quot;</span></span></code></pre></div>
+<p>The <code>LAR_batch</code> returns the <code>LAR_batch</code> class object. It is the form of the list of <code>LAR</code> class objects which names of elements are IDs for people, i.e., each element of <code>LAR_batch</code> class is <code>LAR</code> class object. Thus, printing the results of <code>LAR_batch</code> is similar to <code>LAR</code>.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(ex_batch, <span class="at">max.id=</span><span class="dv">3</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; LAR result of ID01 </span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; LAR: </span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     Lower      Mean     Upper </span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  359.9479  671.3751 1203.8111 </span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Future LAR: </span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;            Lower       Mean     Upper</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; F.LAR   337.3697   597.7655  1032.216</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; BFR   15992.9219 15992.9219 15992.922</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; TFR   16330.2917 16590.6874 17025.137</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; LAR result of ID02 </span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; LAR: </span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    Lower     Mean    Upper </span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 308.6326 532.0084 758.9928 </span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Future LAR: </span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;           Lower       Mean      Upper</span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; F.LAR   299.063   518.3091   732.8379</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; BFR   24653.092 24653.0924 24653.0924</span></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; TFR   24952.155 25171.4015 25385.9303</span></span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; LAR result of ID03 </span></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; LAR: </span></span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     Lower      Mean     Upper </span></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  791.5664 1241.2319 1734.6870 </span></span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Future LAR: </span></span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;            Lower      Mean     Upper</span></span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; F.LAR   772.5637  1217.909  1698.646</span></span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; BFR   20338.3442 20338.344 20338.344</span></span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; TFR   21110.9079 21556.253 22036.991</span></span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; The results for 17 people are omitted.</span></span></code></pre></div>
+<p>If you want the minimum results, we can use the <code>print</code>. It also runs by default when simply calling the <code>LAR_batch</code> class object. Using the <code>max.id</code> option, you can control the maximum number of printing results (default is 50).</p>
+<p><br> Similarly, using the <code>summary</code>, you can get more detailed results. The result of the function is the same as listing the summary of each person.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ex_batch, <span class="at">max.id=</span><span class="dv">3</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; summaries of LAR result :  ID01 </span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Information: </span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     sex birth</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  female  1973</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; LAR: </span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;               Lower     Mean     Upper        LBR    LFR</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; lung        74.5065 156.5247  241.1717  3630.3464 0.0431</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ovary        4.4880  13.3756   27.6491   697.6095 0.0192</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; bladder     13.0799  30.4405   58.7444   452.0590 0.0673</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; thyroid     83.9986 368.7603  877.5446  7318.8901 0.0504</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; remainder   33.5177  89.1794  169.3327  4237.3935 0.0210</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; oesophagus   0.2000   4.0450   10.4666   116.7920 0.0346</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; rectum       0.2670   9.0496   21.7567  2157.6294 0.0042</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; leukemia     0.0000   0.0000    0.0000     0.0000    NaN</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; solid      359.9479 671.3751 1203.8111 18610.7199 0.0361</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; total      359.9479 671.3751 1203.8111 18610.7199 0.0361</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Future LAR: </span></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;               Lower     Mean     Upper        BFR        TFR</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; lung        73.4884 154.5469  238.6027  3574.2001  3728.7470</span></span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ovary        4.0861  12.0693   25.2806   597.5191   609.5885</span></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; bladder     13.0173  30.3006   58.5236   452.9404   483.2410</span></span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; thyroid     68.7104 303.3691  745.8708  5117.1159  5420.4850</span></span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; remainder   32.3341  84.9052  160.5547  4066.5835  4151.4887</span></span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; oesophagus   0.1978   3.9420   10.2253   115.9270   119.8690</span></span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; rectum       0.2558   8.6324   20.6083  2068.6359  2077.2682</span></span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; leukemia     0.0000   0.0000    0.0000     0.0000     0.0000</span></span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; solid      337.3697 597.7655 1032.2155 15992.9219 16590.6874</span></span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; total      337.3697 597.7655 1032.2155 15992.9219 16590.6874</span></span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Confidence Level: 0.9</span></span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Current Year: 2022</span></span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; summaries of LAR result :  ID02 </span></span>
+<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Information: </span></span>
+<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   sex birth</span></span>
+<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  male  1981</span></span>
+<span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; LAR: </span></span>
+<span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                Lower     Mean    Upper        LBR     LFR</span></span>
+<span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; colon        91.2117 191.6816 305.6734  4478.9565  0.0428</span></span>
+<span id="cb16-47"><a href="#cb16-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; lung         74.4763 168.8631 279.8595  9283.1503  0.0182</span></span>
+<span id="cb16-48"><a href="#cb16-48" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; prostate    -86.4482  25.0355 145.8765  5267.9372  0.0048</span></span>
+<span id="cb16-49"><a href="#cb16-49" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; thyroid      22.3790  96.6625 222.4750  1752.7121  0.0552</span></span>
+<span id="cb16-50"><a href="#cb16-50" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; oral          3.5526  17.3279  37.6939   910.2072  0.0190</span></span>
+<span id="cb16-51"><a href="#cb16-51" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; gallbladder -47.0215  -3.5972  35.1159  1660.5321 -0.0022</span></span>
+<span id="cb16-52"><a href="#cb16-52" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; pancreas      7.0824  36.0351  75.1721  1444.6747  0.0249</span></span>
+<span id="cb16-53"><a href="#cb16-53" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; leukemia      0.0000   0.0000   0.0000     0.0000     NaN</span></span>
+<span id="cb16-54"><a href="#cb16-54" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; solid       308.6326 532.0084 758.9928 24798.1701  0.0215</span></span>
+<span id="cb16-55"><a href="#cb16-55" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; total       308.6326 532.0084 758.9928 24798.1701  0.0215</span></span>
+<span id="cb16-56"><a href="#cb16-56" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb16-57"><a href="#cb16-57" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Future LAR: </span></span>
+<span id="cb16-58"><a href="#cb16-58" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                Lower     Mean    Upper        BFR        TFR</span></span>
+<span id="cb16-59"><a href="#cb16-59" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; colon        90.4213 189.4351 302.3448  4487.5107  4676.9459</span></span>
+<span id="cb16-60"><a href="#cb16-60" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; lung         74.5179 169.0736 280.2397  9376.4058  9545.4794</span></span>
+<span id="cb16-61"><a href="#cb16-61" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; prostate    -87.1754  25.1826 146.7595  5338.8263  5364.0089</span></span>
+<span id="cb16-62"><a href="#cb16-62" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; thyroid      19.4114  85.7532 192.9084  1419.3347  1505.0879</span></span>
+<span id="cb16-63"><a href="#cb16-63" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; oral          3.4014  16.6222  36.3778   899.9821   916.6043</span></span>
+<span id="cb16-64"><a href="#cb16-64" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; gallbladder -47.0382  -3.5969  35.1253  1675.7064  1672.1095</span></span>
+<span id="cb16-65"><a href="#cb16-65" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; pancreas      6.9750  35.8394  74.8672  1455.3263  1491.1657</span></span>
+<span id="cb16-66"><a href="#cb16-66" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; leukemia      0.0000   0.0000   0.0000     0.0000     0.0000</span></span>
+<span id="cb16-67"><a href="#cb16-67" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; solid       299.0630 518.3091 732.8379 24653.0924 25171.4015</span></span>
+<span id="cb16-68"><a href="#cb16-68" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; total       299.0630 518.3091 732.8379 24653.0924 25171.4015</span></span>
+<span id="cb16-69"><a href="#cb16-69" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb16-70"><a href="#cb16-70" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Confidence Level: 0.9</span></span>
+<span id="cb16-71"><a href="#cb16-71" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Current Year: 2022</span></span>
+<span id="cb16-72"><a href="#cb16-72" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb16-73"><a href="#cb16-73" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb16-74"><a href="#cb16-74" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; summaries of LAR result :  ID03 </span></span>
+<span id="cb16-75"><a href="#cb16-75" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb16-76"><a href="#cb16-76" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Information: </span></span>
+<span id="cb16-77"><a href="#cb16-77" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   sex birth</span></span>
+<span id="cb16-78"><a href="#cb16-78" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  male  1988</span></span>
+<span id="cb16-79"><a href="#cb16-79" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb16-80"><a href="#cb16-80" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; LAR: </span></span>
+<span id="cb16-81"><a href="#cb16-81" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;               Lower      Mean     Upper       LBR    LFR</span></span>
+<span id="cb16-82"><a href="#cb16-82" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; stomach    282.2981  484.3981  719.4266 10050.485 0.0482</span></span>
+<span id="cb16-83"><a href="#cb16-83" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; prostate  -209.3797   60.6094  306.9072  5240.937 0.0116</span></span>
+<span id="cb16-84"><a href="#cb16-84" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; remainder  408.0930  696.2245 1095.6493  5028.838 0.1384</span></span>
+<span id="cb16-85"><a href="#cb16-85" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; leukemia     0.0000    0.0000    0.0000     0.000    NaN</span></span>
+<span id="cb16-86"><a href="#cb16-86" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; solid      791.5664 1241.2319 1734.6870 20320.261 0.0611</span></span>
+<span id="cb16-87"><a href="#cb16-87" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; total      791.5664 1241.2319 1734.6870 20320.261 0.0611</span></span>
+<span id="cb16-88"><a href="#cb16-88" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb16-89"><a href="#cb16-89" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Future LAR: </span></span>
+<span id="cb16-90"><a href="#cb16-90" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;               Lower      Mean     Upper       BFR       TFR</span></span>
+<span id="cb16-91"><a href="#cb16-91" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; stomach    279.9070  481.0488  714.4396 10100.598 10581.647</span></span>
+<span id="cb16-92"><a href="#cb16-92" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; prostate  -210.9228   60.7878  308.2314  5286.830  5347.618</span></span>
+<span id="cb16-93"><a href="#cb16-93" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; remainder  394.4592  676.0721 1062.5141  4950.916  5626.988</span></span>
+<span id="cb16-94"><a href="#cb16-94" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; leukemia     0.0000    0.0000    0.0000     0.000     0.000</span></span>
+<span id="cb16-95"><a href="#cb16-95" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; solid      772.5637 1217.9087 1698.6464 20338.344 21556.253</span></span>
+<span id="cb16-96"><a href="#cb16-96" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; total      772.5637 1217.9087 1698.6464 20338.344 21556.253</span></span>
+<span id="cb16-97"><a href="#cb16-97" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb16-98"><a href="#cb16-98" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Confidence Level: 0.9</span></span>
+<span id="cb16-99"><a href="#cb16-99" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Current Year: 2022</span></span>
+<span id="cb16-100"><a href="#cb16-100" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb16-101"><a href="#cb16-101" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb16-102"><a href="#cb16-102" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; The results for 17 people are omitted.</span></span></code></pre></div>
+<p><br> ### <code>LAR_group</code>: the function of averaging estimated LAR by group The function <code>LAR_group</code> is averaging the calculated risks according to groups. It offers grouped LAR, grouped future LAR, and grouped baseline risk values based on values of simulation for each person. It provides each LAR value for each group, which makes new LAR values, and then these new LAR values are taken to present summarized LAR values for each group.</p>
+<p>This function requires not only the value distinguishing the person but also the value for the group. <code>group</code> is the vector or list that groups the data. The function returns the <code>LAR_group</code> class object which is the form of a list of <code>LAR</code> class objects.</p>
+<p><br> Suppose that we want to estimate the average LAR of the people in the <code>nuclear</code> dataset by the <em>distance</em>. Then we can put <code>group=nuclear$distnace</code> in <code>LAR_group</code>.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>ex_group1 <span class="ot">&lt;-</span> <span class="fu">LAR_group</span>(nuclear, <span class="at">pid =</span> nuclear<span class="sc">$</span>ID, <span class="at">group =</span> nuclear<span class="sc">$</span>distance,</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">basedata =</span> <span class="fu">list</span>(life2010, incid2010))</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ex_group1)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; summaries of LAR result : Group 1 </span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Group Information: </span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     sex count    birth</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  female    35 1962.600</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    male    45 1962.222</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; LAR: </span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                Lower     Mean    Upper        LBR     LFR</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; stomach      50.9850  66.2373  87.8936  2926.1714  0.0226</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; colon        43.4301  56.1274  72.3353  2160.0832  0.0260</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; liver         7.0657  10.4933  15.2987   808.9772  0.0130</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; lung         39.1538  53.4791  70.6998  3097.9930  0.0173</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; breast        2.8636   4.2821   6.0646   331.2576  0.0129</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ovary         0.3206   0.9554   1.9749    49.8292  0.0192</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; uterus        0.0216   0.1491   0.3288    68.4665  0.0022</span></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; prostate    -15.4917   6.2743  27.6037   960.8121  0.0065</span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; bladder      10.5122  16.1598  23.8353   430.7553  0.0375</span></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; brain/cns     0.7414   1.3918   2.2998    46.3592  0.0300</span></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; thyroid      67.7618 185.2396 350.2187  1648.0018  0.1124</span></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; remainder    34.5468  56.8793  88.6948   912.3992  0.0623</span></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; oral          0.3038   1.3365   2.7663   105.2675  0.0127</span></span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; oesophagus    2.7255   5.3313   8.1798   208.5186  0.0256</span></span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; rectum        0.3667   1.3777   2.5946   618.5623  0.0022</span></span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; gallbladder  -6.2708  -0.9336   4.2742   420.9955 -0.0022</span></span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; pancreas      3.4377   7.4064  11.9408   493.6795  0.0150</span></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; kidney        1.0530   3.2226   6.5984   203.1165  0.0159</span></span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; leukemia      0.0713   0.2012   0.5677    19.9927  0.0101</span></span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; solid       339.2210 475.4092 659.3305 15491.2456  0.0307</span></span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; total       339.4012 475.6104 659.5318 15511.2384  0.0307</span></span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Future LAR: </span></span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                Lower     Mean    Upper        BFR        TFR</span></span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; stomach      48.2294  63.3542  84.7154  2490.0371  2553.3913</span></span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; colon        40.9639  53.4541  69.9636  1902.1381  1955.5921</span></span>
+<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; liver         6.0418   9.0587  13.2437   571.8794   580.9381</span></span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; lung         38.4091  52.5642  69.9525  2877.2243  2929.7885</span></span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; breast        2.3678   3.5644   5.0447   157.2215   160.7859</span></span>
+<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ovary         0.2919   0.8621   1.8058    42.6799    43.5420</span></span>
+<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; uterus        0.0203   0.1258   0.2655    41.5060    41.6318</span></span>
+<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; prostate    -15.5887   6.2226  27.5255   881.1613   887.3839</span></span>
+<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; bladder      10.3276  16.0169  23.7049   387.4721   403.4890</span></span>
+<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; brain/cns     0.6220   1.1373   1.8552    35.4464    36.5837</span></span>
+<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; thyroid      60.0224 170.7748 330.0385  1233.1081  1403.8830</span></span>
+<span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; remainder    33.7594  54.9135  84.8616   837.8480   892.7615</span></span>
+<span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; oral          0.2668   1.2582   2.6651    87.9061    89.1643</span></span>
+<span id="cb17-50"><a href="#cb17-50" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; oesophagus    2.4342   4.4985   6.7130   162.4755   166.9740</span></span>
+<span id="cb17-51"><a href="#cb17-51" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; rectum        0.3337   1.2961   2.4649   524.0167   525.3128</span></span>
+<span id="cb17-52"><a href="#cb17-52" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; gallbladder  -6.0139  -0.8791   4.1981   361.3716   360.4925</span></span>
+<span id="cb17-53"><a href="#cb17-53" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; pancreas      3.2450   7.1431  11.5463   453.7292   460.8723</span></span>
+<span id="cb17-54"><a href="#cb17-54" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; kidney        0.9721   3.1387   6.5336   183.9500   187.0887</span></span>
+<span id="cb17-55"><a href="#cb17-55" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; leukemia      0.0827   0.1485   0.2667    13.7139    13.8624</span></span>
+<span id="cb17-56"><a href="#cb17-56" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; solid       318.3267 448.5040 621.6234 13231.1713 13679.6753</span></span>
+<span id="cb17-57"><a href="#cb17-57" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; total       318.4752 448.6524 621.7718 13244.8852 13693.5376</span></span>
+<span id="cb17-58"><a href="#cb17-58" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb17-59"><a href="#cb17-59" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Confidence Level: 0.9</span></span>
+<span id="cb17-60"><a href="#cb17-60" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Current Year: 2022</span></span>
+<span id="cb17-61"><a href="#cb17-61" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb17-62"><a href="#cb17-62" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb17-63"><a href="#cb17-63" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; summaries of LAR result : Group 2 </span></span>
+<span id="cb17-64"><a href="#cb17-64" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb17-65"><a href="#cb17-65" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Group Information: </span></span>
+<span id="cb17-66"><a href="#cb17-66" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     sex count    birth</span></span>
+<span id="cb17-67"><a href="#cb17-67" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  female    12 1987.417</span></span>
+<span id="cb17-68"><a href="#cb17-68" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    male     5 1956.000</span></span>
+<span id="cb17-69"><a href="#cb17-69" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb17-70"><a href="#cb17-70" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; LAR: </span></span>
+<span id="cb17-71"><a href="#cb17-71" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                 Lower      Mean     Upper       LBR     LFR</span></span>
+<span id="cb17-72"><a href="#cb17-72" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; colon        372.7596  534.3113  750.7850 2319.0697  0.2304</span></span>
+<span id="cb17-73"><a href="#cb17-73" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; liver         33.3218   57.2681   87.5048 1184.1939  0.0484</span></span>
+<span id="cb17-74"><a href="#cb17-74" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; lung         846.3382 1072.5057 1355.1944  903.6865  1.1868</span></span>
+<span id="cb17-75"><a href="#cb17-75" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; breast       222.3765  302.6915  391.8901 1117.4866  0.2709</span></span>
+<span id="cb17-76"><a href="#cb17-76" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ovary          9.4594   24.1729   47.0888  183.7846  0.1315</span></span>
+<span id="cb17-77"><a href="#cb17-77" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; bladder      142.6668  242.1335  363.4800  559.0715  0.4331</span></span>
+<span id="cb17-78"><a href="#cb17-78" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; brain/cns     21.8762   44.8910   77.9991  154.8744  0.2899</span></span>
+<span id="cb17-79"><a href="#cb17-79" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; thyroid        6.3675   20.9331   49.7293  208.9864  0.1002</span></span>
+<span id="cb17-80"><a href="#cb17-80" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; remainder     70.0662  148.2741  249.0938  996.9884  0.1487</span></span>
+<span id="cb17-81"><a href="#cb17-81" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; oral           4.7167   12.1716   21.1804   85.6799  0.1421</span></span>
+<span id="cb17-82"><a href="#cb17-82" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; rectum        -0.0033   13.9800   30.7953  822.0275  0.0170</span></span>
+<span id="cb17-83"><a href="#cb17-83" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; gallbladder  -30.2879   -3.1930   21.6224  392.5105 -0.0081</span></span>
+<span id="cb17-84"><a href="#cb17-84" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; kidney        13.8521   63.7456  115.0254  108.8816  0.5855</span></span>
+<span id="cb17-85"><a href="#cb17-85" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; leukemia       0.0000    0.0000    0.0000    0.0000     NaN</span></span>
+<span id="cb17-86"><a href="#cb17-86" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; solid       2151.0610 2533.8854 2926.4130 9037.2418  0.2804</span></span>
+<span id="cb17-87"><a href="#cb17-87" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; total       2151.0610 2533.8854 2926.4130 9037.2418  0.2804</span></span>
+<span id="cb17-88"><a href="#cb17-88" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb17-89"><a href="#cb17-89" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Future LAR: </span></span>
+<span id="cb17-90"><a href="#cb17-90" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                 Lower      Mean     Upper       BFR        TFR</span></span>
+<span id="cb17-91"><a href="#cb17-91" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; colon        364.4924  525.4833  742.8677 2213.9874  2739.4707</span></span>
+<span id="cb17-92"><a href="#cb17-92" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; liver         29.5310   49.2922   73.7681  889.0078   938.3000</span></span>
+<span id="cb17-93"><a href="#cb17-93" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; lung         846.3634 1072.4452 1355.3351  904.4108  1976.8560</span></span>
+<span id="cb17-94"><a href="#cb17-94" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; breast       217.7182  295.4201  380.9547 1023.7419  1319.1619</span></span>
+<span id="cb17-95"><a href="#cb17-95" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ovary          9.0491   23.0481   45.7178  173.2399   196.2880</span></span>
+<span id="cb17-96"><a href="#cb17-96" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; bladder      140.4023  238.6815  361.0392  532.7003   771.3818</span></span>
+<span id="cb17-97"><a href="#cb17-97" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; brain/cns     19.1969   36.5269   63.6421  137.3470   173.8739</span></span>
+<span id="cb17-98"><a href="#cb17-98" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; thyroid        4.3048   14.3870   34.6246  102.4385   116.8256</span></span>
+<span id="cb17-99"><a href="#cb17-99" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; remainder     64.0335  134.6180  223.1729  889.7768  1024.3948</span></span>
+<span id="cb17-100"><a href="#cb17-100" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; oral           4.4367   11.4174   19.7983   81.9720    93.3894</span></span>
+<span id="cb17-101"><a href="#cb17-101" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; rectum         0.0109   11.7686   25.5870  644.5561   656.3247</span></span>
+<span id="cb17-102"><a href="#cb17-102" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; gallbladder  -28.4010   -2.9860   20.1886  368.7285   365.7425</span></span>
+<span id="cb17-103"><a href="#cb17-103" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; kidney        13.8496   63.4438  114.7303  108.1452   171.5890</span></span>
+<span id="cb17-104"><a href="#cb17-104" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; leukemia       0.0000    0.0000    0.0000    0.0000     0.0000</span></span>
+<span id="cb17-105"><a href="#cb17-105" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; solid       2097.9502 2473.5461 2862.3532 8070.0522 10543.5984</span></span>
+<span id="cb17-106"><a href="#cb17-106" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; total       2097.9502 2473.5461 2862.3532 8070.0522 10543.5984</span></span>
+<span id="cb17-107"><a href="#cb17-107" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb17-108"><a href="#cb17-108" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Confidence Level: 0.9</span></span>
+<span id="cb17-109"><a href="#cb17-109" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Current Year: 2022</span></span>
+<span id="cb17-110"><a href="#cb17-110" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb17-111"><a href="#cb17-111" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb17-112"><a href="#cb17-112" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; summaries of LAR result : Group 3 </span></span>
+<span id="cb17-113"><a href="#cb17-113" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb17-114"><a href="#cb17-114" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Group Information: </span></span>
+<span id="cb17-115"><a href="#cb17-115" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     sex count birth</span></span>
+<span id="cb17-116"><a href="#cb17-116" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  female     1  1933</span></span>
+<span id="cb17-117"><a href="#cb17-117" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    male     2  2004</span></span>
+<span id="cb17-118"><a href="#cb17-118" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb17-119"><a href="#cb17-119" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; LAR: </span></span>
+<span id="cb17-120"><a href="#cb17-120" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             Lower      Mean     Upper       LBR    LFR</span></span>
+<span id="cb17-121"><a href="#cb17-121" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; colon    1209.822 1769.6169 2469.1052 2222.3599 0.7963</span></span>
+<span id="cb17-122"><a href="#cb17-122" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; oral        6.602   17.1635   29.4681   62.4035 0.2750</span></span>
+<span id="cb17-123"><a href="#cb17-123" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; rectum     13.638  298.1917  594.8688 1749.5705 0.1704</span></span>
+<span id="cb17-124"><a href="#cb17-124" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; leukemia    0.000    0.0000    0.0000    0.0000    NaN</span></span>
+<span id="cb17-125"><a href="#cb17-125" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; solid    1372.524 2084.9721 2843.2003 4034.3339 0.5168</span></span>
+<span id="cb17-126"><a href="#cb17-126" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; total    1372.524 2084.9721 2843.2003 4034.3339 0.5168</span></span>
+<span id="cb17-127"><a href="#cb17-127" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb17-128"><a href="#cb17-128" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Future LAR: </span></span>
+<span id="cb17-129"><a href="#cb17-129" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;              Lower      Mean     Upper       BFR       TFR</span></span>
+<span id="cb17-130"><a href="#cb17-130" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; colon    1209.3299 1768.8959 2468.3009 2227.0219 3995.9179</span></span>
+<span id="cb17-131"><a href="#cb17-131" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; oral        4.7252   12.1299   20.4353   31.9436   44.0735</span></span>
+<span id="cb17-132"><a href="#cb17-132" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; rectum     13.6274  298.2743  595.1193 1753.3920 2051.6663</span></span>
+<span id="cb17-133"><a href="#cb17-133" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; leukemia    0.0000    0.0000    0.0000    0.0000    0.0000</span></span>
+<span id="cb17-134"><a href="#cb17-134" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; solid    1369.2378 2079.3001 2838.2846 4012.3575 6091.6576</span></span>
+<span id="cb17-135"><a href="#cb17-135" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; total    1369.2378 2079.3001 2838.2846 4012.3575 6091.6576</span></span>
+<span id="cb17-136"><a href="#cb17-136" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb17-137"><a href="#cb17-137" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Confidence Level: 0.9</span></span>
+<span id="cb17-138"><a href="#cb17-138" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Current Year: 2022</span></span>
+<span id="cb17-139"><a href="#cb17-139" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span></code></pre></div>
+<p>The result of the <code>LAR_group</code> is similar to those of <code>LAR_batch</code>. The difference is the <strong>Group Information tab</strong>, which provides the gender frequency table within the group and the average birth-year within the group, instead of each individuals’ gender and birth-year. The risks are the estimates of the average LAR in groups.</p>
+<p><br><br></p>
+</div>
+</div>
+<div id="write-the-result-in-a-file" class="section level2">
+<h2>Write the result in a file</h2>
+<p><code>LARisk</code> includes the functions which write a result of <code>LAR</code>, <code>LAR_batch</code>, and <code>LAR_group</code>. <code>write_LAR</code> is the function that saves the <code>LAR</code> class family into a CSV file.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_LAR</span>(x, filename)</span></code></pre></div>
+<p>In this function, <code>x</code> is an object that wants to save into a CSV file. When you put the file name or connection to write into <code>filename</code>, the object is saved there. Note that if there exists the csv file which has the same title with <code>filename</code>, it would be overlapped. Therefore, before deciding a <code>file name</code>, be cautious to check whether or not the name is duplicated. In the same way as above, the result from the LAR batch function can be saved as a CSV file.</p>
+<p><br> If the object is a <code>LAR</code> class object, the format of the saved file is that:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="center"></th>
+<th align="center">Lower</th>
+<th align="center">Mean</th>
+<th align="center">Upper</th>
+<th align="center">F.Lower</th>
+<th align="center">F.Mean</th>
+<th align="center">F.Upper</th>
+<th align="center">LBR</th>
+<th align="center">BFR</th>
+<th align="center">LFR</th>
+<th align="center">TFR</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">site-name</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="center">solid</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="center">total</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
+<p>The function exports a table whose row is represented as site-names, solid, total, and whose column is the risks.</p>
+<p><br> Since the <code>LAR_batch</code> class object is a list of <code>LAR</code> objects, it is difficult to export files in the same form as above. Thus, if the object’s class is <code>LAR_batch</code>, the function saves a file whose values are represented in a horizontal way for each organ, solid, and total.</p>
+<p>Despite the case of the <code>LAR</code> function is somehow intuitive, the <code>LAR_batch</code> function is not simple. We make space for all organs, and values from the function are put in their own space. Therefore, there are 190 columns including the <strong>person ID column (PID)</strong>, and the number of rows depends on the number of ids in the data. The columns are ordered in (<strong>LAR</strong>)-(<strong>Future LAR</strong>)-(<strong>Baseline Risk</strong>)-(<strong>Total Future Risk</strong>) in general. In <strong>LAR</strong> and <strong>Future LAR</strong>, each is made up of lower limit, upper limit, and mean values, and for the <strong>Baseline Risk</strong>, it is made up of baseline risk of exposed age, the baseline risk of attained age, and <strong>LFR</strong>. The last part is the <strong>total future risk</strong> for each site. Hence, for each component, there are values of all-organ, all-solid-cancer, and each organ, i.e. 21 elements. So that, the file has somehow wide shape with 210 columns.</p>
+<p>If the class of the object is <code>LAR_group</code>, the format of the saved file is the same. In this case, the first column is <strong>GROUP</strong> instead of <strong>PID</strong>.</p>
+<p><br><br></p>
+</div>
+<div id="examples" class="section level2">
+<h2>Examples</h2>
+<p>Now, consider the toy example of <code>organ</code> data. This data has 20 people which are exposed to radiation several times.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(organ)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     ID  sex birth exposure       site exposure_rate   dosedist       dose1</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 ID01 male  1985     2011 oesophagus       chronic fixedvalue 0.001954895</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 ID01 male  1985     2011     kidney       chronic fixedvalue 0.003855487</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 ID01 male  1985     2011     rectum       chronic fixedvalue 0.003855487</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 ID01 male  1985     2011    thyroid       chronic fixedvalue 0.005104447</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 ID01 male  1985     2013 oesophagus       chronic fixedvalue 0.089358392</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 ID01 male  1985     2013     kidney       chronic fixedvalue 0.176234606</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   dose2 dose3 occup</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1    NA    NA     1</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2    NA    NA     1</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3    NA    NA     1</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4    NA    NA     1</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5    NA    NA     1</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6    NA    NA     1</span></span></code></pre></div>
+<p>Assume that we want to calculate the risks with the current year is 2021. In this example, we calculate the risks for the population in Korea, in 2018.</p>
+<p>First, the estimated risks of ‘ID01’ is that:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>organ1 <span class="ot">&lt;-</span> organ[organ<span class="sc">$</span>ID<span class="sc">==</span><span class="st">&#39;ID01&#39;</span>,]</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>ex_organ1 <span class="ot">&lt;-</span> <span class="fu">LAR</span>(organ1, <span class="at">baseda=</span><span class="fu">list</span>(life2018, incid2018), <span class="at">current=</span><span class="dv">2021</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>ex_organ1</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; LAR: </span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Lower   Mean  Upper </span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1.1149 1.6981 2.5132 </span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Future LAR: </span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;           Lower      Mean     Upper</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; F.LAR    1.1132    1.6759    2.4744</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; BFR   6694.6423 6694.6423 6694.6423</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; TFR   6695.7555 6696.3182 6697.1167</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span></code></pre></div>
+<p>The estimated LAR of the person ID01 is <strong>1.6981</strong> with the 90% confidence interval <strong>(1.1149, 2.5132)</strong>. The future risk is <strong>1.6759</strong> with the 90% confidence interval <strong>(1.1132, 2.4744)</strong></p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ex_organ1)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Information: </span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   sex birth</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  male  1985</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; LAR: </span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             Lower   Mean  Upper      LBR   LFR</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; thyroid    0.4673 0.9709 1.8205 1771.543 5e-04</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; oesophagus 0.1025 0.1824 0.2729 1048.947 2e-04</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; rectum     0.0978 0.2385 0.4111 2893.126 1e-04</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; kidney     0.1416 0.3064 0.5160 1338.149 2e-04</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; leukemia   0.0000 0.0000 0.0000    0.000   NaN</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; solid      1.1149 1.6981 2.5132 7051.764 2e-04</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; total      1.1149 1.6981 2.5132 7051.764 2e-04</span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Future LAR: </span></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             Lower   Mean  Upper      BFR      TFR</span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; thyroid    0.4507 0.9512 1.7587 1453.492 1454.443</span></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; oesophagus 0.1025 0.1823 0.2728 1055.583 1055.766</span></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; rectum     0.0977 0.2379 0.4108 2877.117 2877.355</span></span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; kidney     0.1406 0.3045 0.5153 1308.450 1308.755</span></span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; leukemia   0.0000 0.0000 0.0000    0.000    0.000</span></span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; solid      1.1132 1.6759 2.4744 6694.642 6696.318</span></span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; total      1.1132 1.6759 2.4744 6694.642 6696.318</span></span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Confidence Level: 0.9</span></span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Current Year: 2021</span></span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span></code></pre></div>
+<p>With <code>summary</code>, we can get a more detailed report of the result. By the result, the person <em>ID01</em> is a man born in 1985. This person was exposed radiation to thyroid, oesophagus, ‘rectum’, and kidney. Since <code>leukemia</code> is not included in this data, the result for <code>leukemia</code> is zero.</p>
+<p><br><br></p>
+<p>Consider the risks of the female / male groups of the <code>organ</code>.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>ex_organ2 <span class="ot">&lt;-</span> <span class="fu">LAR_group</span>(organ, <span class="at">pid=</span>organ<span class="sc">$</span>ID, <span class="at">group=</span>organ<span class="sc">$</span>sex,</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">basedata=</span><span class="fu">list</span>(life2018, incid2018), <span class="at">current=</span><span class="dv">2021</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ex_organ2)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; summaries of LAR result : Group female </span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Group Information: </span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     sex count    birth</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  female   166 1976.313</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; LAR: </span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;               Lower    Mean   Upper       LBR     LFR</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; colon        0.6832  1.1392  1.7064 1080.1190  0.0011</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; lung         2.3739  2.8990  3.5941 1353.2750  0.0021</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; uterus       0.1447  0.2874  0.4696  338.1363  0.0008</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; bladder      0.9560  1.3026  1.7539  155.9481  0.0084</span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; remainder    2.9905  4.5565  6.7692 1875.6871  0.0024</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; oral         0.1509  0.2311  0.3413  130.7238  0.0018</span></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; oesophagus   0.0203  0.0768  0.1583   18.0691  0.0043</span></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; rectum       0.2375  0.4315  0.6480  873.1753  0.0005</span></span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; gallbladder -0.1736 -0.0274  0.1067  290.7825 -0.0001</span></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; pancreas     0.0661  0.1089  0.1608  283.0072  0.0004</span></span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; leukemia     0.0792  0.1800  0.4092   81.1517  0.0022</span></span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; solid        9.3445 11.0056 13.3345 6398.9234  0.0017</span></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; total        9.5265 11.1856 13.5145 6480.0751  0.0017</span></span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Future LAR: </span></span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;               Lower    Mean   Upper       BFR       TFR</span></span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; colon        0.6658  1.0964  1.6314 1051.6541 1052.7505</span></span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; lung         2.3673  2.8906  3.5837 1352.5231 1355.4137</span></span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; uterus       0.1423  0.2825  0.4686  296.3270  296.6095</span></span>
+<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; bladder      0.9503  1.2916  1.7359  154.4180  155.7096</span></span>
+<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; remainder    2.8942  4.4153  6.5409 1792.3971 1796.8124</span></span>
+<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; oral         0.1444  0.2181  0.3177  119.1196  119.3377</span></span>
+<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; oesophagus   0.0201  0.0762  0.1568   18.0923   18.1685</span></span>
+<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; rectum       0.2346  0.4186  0.6327  835.6204  836.0390</span></span>
+<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; gallbladder -0.1735 -0.0274  0.1066  292.4045  292.3771</span></span>
+<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; pancreas     0.0653  0.1079  0.1591  281.1836  281.2915</span></span>
+<span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; leukemia     0.0944  0.1773  0.3603   77.5662   77.7435</span></span>
+<span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; solid        9.1382 10.7697 12.9982 6193.7399 6204.5095</span></span>
+<span id="cb22-41"><a href="#cb22-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; total        9.3172 10.9470 13.1770 6271.3060 6282.2530</span></span>
+<span id="cb22-42"><a href="#cb22-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb22-43"><a href="#cb22-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Confidence Level: 0.9</span></span>
+<span id="cb22-44"><a href="#cb22-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Current Year: 2021</span></span>
+<span id="cb22-45"><a href="#cb22-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb22-46"><a href="#cb22-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb22-47"><a href="#cb22-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; summaries of LAR result : Group male </span></span>
+<span id="cb22-48"><a href="#cb22-48" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb22-49"><a href="#cb22-49" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Group Information: </span></span>
+<span id="cb22-50"><a href="#cb22-50" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   sex count    birth</span></span>
+<span id="cb22-51"><a href="#cb22-51" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  male   805 1966.561</span></span>
+<span id="cb22-52"><a href="#cb22-52" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb22-53"><a href="#cb22-53" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; LAR: </span></span>
+<span id="cb22-54"><a href="#cb22-54" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;               Lower    Mean   Upper        LBR     LFR</span></span>
+<span id="cb22-55"><a href="#cb22-55" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; stomach      3.3791  3.8814  4.5159  2861.1179  0.0014</span></span>
+<span id="cb22-56"><a href="#cb22-56" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; colon        2.9728  3.5787  4.2951   891.9982  0.0040</span></span>
+<span id="cb22-57"><a href="#cb22-57" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; liver        0.7400  0.9784  1.2916   328.3202  0.0030</span></span>
+<span id="cb22-58"><a href="#cb22-58" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; lung         1.7903  2.1896  2.7012  1379.3554  0.0016</span></span>
+<span id="cb22-59"><a href="#cb22-59" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; prostate    -0.1064  0.8221  1.7976  1553.0173  0.0005</span></span>
+<span id="cb22-60"><a href="#cb22-60" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; bladder      0.9763  1.2158  1.5097   530.2854  0.0023</span></span>
+<span id="cb22-61"><a href="#cb22-61" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; brain/cns    0.1014  0.1315  0.1718    75.0266  0.0018</span></span>
+<span id="cb22-62"><a href="#cb22-62" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; thyroid      1.1497  1.6947  2.4809   508.2328  0.0033</span></span>
+<span id="cb22-63"><a href="#cb22-63" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; remainder    7.3442  8.7682 10.4821  1396.0668  0.0063</span></span>
+<span id="cb22-64"><a href="#cb22-64" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; oral         0.4086  0.5480  0.7018   355.2983  0.0015</span></span>
+<span id="cb22-65"><a href="#cb22-65" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; oesophagus   0.4106  0.4973  0.5973   299.5552  0.0017</span></span>
+<span id="cb22-66"><a href="#cb22-66" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; rectum       0.3106  0.4829  0.6906   619.8016  0.0008</span></span>
+<span id="cb22-67"><a href="#cb22-67" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; gallbladder -0.2683 -0.0629  0.1323   281.3131 -0.0002</span></span>
+<span id="cb22-68"><a href="#cb22-68" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; pancreas     0.4762  0.6373  0.8672   262.5764  0.0024</span></span>
+<span id="cb22-69"><a href="#cb22-69" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; kidney       0.6250  0.8268  1.0208   477.9452  0.0017</span></span>
+<span id="cb22-70"><a href="#cb22-70" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; leukemia     0.4202  0.9776  2.2777    98.4367  0.0099</span></span>
+<span id="cb22-71"><a href="#cb22-71" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; solid       23.8700 26.1898 28.7939 11819.9106  0.0022</span></span>
+<span id="cb22-72"><a href="#cb22-72" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; total       24.8542 27.1674 29.7754 11918.3472  0.0023</span></span>
+<span id="cb22-73"><a href="#cb22-73" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb22-74"><a href="#cb22-74" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Future LAR: </span></span>
+<span id="cb22-75"><a href="#cb22-75" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;               Lower    Mean   Upper        BFR        TFR</span></span>
+<span id="cb22-76"><a href="#cb22-76" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; stomach      2.9529  3.3947  3.9262  2755.3275  2758.7222</span></span>
+<span id="cb22-77"><a href="#cb22-77" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; colon        2.7211  3.2932  3.9434   870.3818   873.6751</span></span>
+<span id="cb22-78"><a href="#cb22-78" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; liver        0.6131  0.8033  1.0509   274.2192   275.0226</span></span>
+<span id="cb22-79"><a href="#cb22-79" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; lung         1.7390  2.1254  2.6232  1389.8859  1392.0113</span></span>
+<span id="cb22-80"><a href="#cb22-80" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; prostate    -0.1170  0.8140  1.7755  1582.8508  1583.6647</span></span>
+<span id="cb22-81"><a href="#cb22-81" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; bladder      0.9560  1.1886  1.4847   533.9888   535.1774</span></span>
+<span id="cb22-82"><a href="#cb22-82" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; brain/cns    0.0800  0.1066  0.1424    64.5289    64.6355</span></span>
+<span id="cb22-83"><a href="#cb22-83" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; thyroid      0.6714  0.9920  1.3906   331.6146   332.6066</span></span>
+<span id="cb22-84"><a href="#cb22-84" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; remainder    6.5417  7.7960  9.4301  1277.7412  1285.5372</span></span>
+<span id="cb22-85"><a href="#cb22-85" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; oral         0.3365  0.4629  0.6085   326.9197   327.3826</span></span>
+<span id="cb22-86"><a href="#cb22-86" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; oesophagus   0.3778  0.4561  0.5447   296.6060   297.0622</span></span>
+<span id="cb22-87"><a href="#cb22-87" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; rectum       0.2574  0.4175  0.6129   582.9204   583.3379</span></span>
+<span id="cb22-88"><a href="#cb22-88" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; gallbladder -0.2587 -0.0614  0.1289   285.0148   284.9534</span></span>
+<span id="cb22-89"><a href="#cb22-89" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; pancreas     0.4322  0.5781  0.7887   256.1738   256.7519</span></span>
+<span id="cb22-90"><a href="#cb22-90" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; kidney       0.4992  0.6462  0.7967   409.5781   410.2243</span></span>
+<span id="cb22-91"><a href="#cb22-91" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; leukemia     0.3114  0.7470  1.7946    83.8317    84.5786</span></span>
+<span id="cb22-92"><a href="#cb22-92" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; solid       20.8728 23.0132 25.3536 11237.7516 11260.7648</span></span>
+<span id="cb22-93"><a href="#cb22-93" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; total       21.6190 23.7602 26.1058 11321.5832 11345.3434</span></span>
+<span id="cb22-94"><a href="#cb22-94" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb22-95"><a href="#cb22-95" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Confidence Level: 0.9</span></span>
+<span id="cb22-96"><a href="#cb22-96" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Current Year: 2021</span></span>
+<span id="cb22-97"><a href="#cb22-97" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span></code></pre></div>
+<p>By the result, the estimated average lifetime risk of a female group is <strong>11.1856 (9.5265, 13.5145)</strong>. Similarly, the estimated average lifetime risk of a male group is <strong>27.1674 (23.8700, 28.7939)</strong>.</p>
+<p><br></p>
+<p>We can also set the variables for group. For example, we want the average risks of female and <code>occup</code> is 1</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>ex_organ3 <span class="ot">&lt;-</span> <span class="fu">LAR_group</span>(organ, <span class="at">pid=</span>organ<span class="sc">$</span>ID, <span class="at">group=</span><span class="fu">list</span>(organ<span class="sc">$</span>sex, organ<span class="sc">$</span>occup),</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">basedata=</span><span class="fu">list</span>(life2018, incid2018), <span class="at">current=</span><span class="dv">2021</span>)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(ex_organ3, <span class="at">max.id=</span><span class="dv">3</span>)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; LAR result of female.1 </span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; LAR: </span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Lower   Mean  Upper </span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4.7547 6.2051 8.0758 </span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Future LAR: </span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;           Lower      Mean     Upper</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; F.LAR    4.7348    6.1773    8.0388</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; BFR   3746.8142 3746.8142 3746.8142</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; TFR   3751.5490 3752.9915 3754.8530</span></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; LAR result of male.1 </span></span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; LAR: </span></span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Lower    Mean   Upper </span></span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 37.9314 41.3941 45.0670 </span></span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Future LAR: </span></span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;            Lower       Mean      Upper</span></span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; F.LAR    32.3847    35.4936    38.7843</span></span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; BFR   12300.1490 12300.1490 12300.1490</span></span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; TFR   12332.5337 12335.6426 12338.9333</span></span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; LAR result of female.4 </span></span>
+<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; LAR: </span></span>
+<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Lower   Mean  Upper </span></span>
+<span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.1310 0.4694 0.8903 </span></span>
+<span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Future LAR: </span></span>
+<span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          Lower     Mean    Upper</span></span>
+<span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; F.LAR   0.1299   0.4655   0.8830</span></span>
+<span id="cb23-40"><a href="#cb23-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; BFR   108.5540 108.5540 108.5540</span></span>
+<span id="cb23-41"><a href="#cb23-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; TFR   108.6839 109.0195 109.4369</span></span>
+<span id="cb23-42"><a href="#cb23-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb23-43"><a href="#cb23-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb23-44"><a href="#cb23-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; The results for 4 groups are omitted.</span></span></code></pre></div>
+<p><br><br></p>
+</div>
+<div id="appendix-datasets-in-larisk" class="section level2">
+<h2>APPENDIX: Datasets in <code>LARisk</code></h2>
+<p>The <code>LARisk</code> package include two toy example datasets, <code>nuclear</code> and <code>organ</code>. These datasets are simulated assuming two situation: One is that all people were exposed to radiation at the same time, and the other is that each person was exposed to radiation over a long period of time. Each data has 11 variables, including 9 essential variables for calculating the LAR.</p>
+<div id="nuclear-a-simulated-dataset-assuming-radioactive-explosion" class="section level3">
+<h3><code>nuclear</code>: a simulated dataset assuming radioactive explosion</h3>
+<p><code>nuclear</code> was simulated assuming the scenario in which everyone is exposed to radiation at the same time. This data includes 20 people, who were exposed to radiation at the same time in 2011. The age exposed to radiation is from 3 to 81 years old, and there are 10 males and 10 females. All values of <code>exposure_rate</code> are <code>acute</code> and all values of <code>dosedist</code> are <code>fixedvalue</code>.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(nuclear)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &#39;data.frame&#39;:    100 obs. of  11 variables:</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ ID           : chr  &quot;ID01&quot; &quot;ID01&quot; &quot;ID01&quot; &quot;ID01&quot; ...</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ sex          : chr  &quot;female&quot; &quot;female&quot; &quot;female&quot; &quot;female&quot; ...</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ birth        : int  1973 1973 1973 1973 1973 1973 1973 1981 1981 1981 ...</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ exposure     : num  2011 2011 2011 2011 2011 ...</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ site         : chr  &quot;ovary&quot; &quot;oesophagus&quot; &quot;bladder&quot; &quot;lung&quot; ...</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ exposure_rate: chr  &quot;acute&quot; &quot;acute&quot; &quot;acute&quot; &quot;acute&quot; ...</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ dosedist     : chr  &quot;fixedvalue&quot; &quot;fixedvalue&quot; &quot;fixedvalue&quot; &quot;fixedvalue&quot; ...</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ dose1        : num  50.1 50.4 52.5 55.7 51.6 ...</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ dose2        : logi  NA NA NA NA NA NA ...</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ dose3        : logi  NA NA NA NA NA NA ...</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ distance     : chr  &quot;1&quot; &quot;1&quot; &quot;1&quot; &quot;1&quot; ...</span></span></code></pre></div>
+<p><code>ID</code> is the variable that is used to identify the individual. We generated the <code>sex</code>, <code>birth</code>, and <code>site</code> fully random. And the exposure dose (<code>dose1</code>) was generated from the log-normal distribution, and a variable called <code>distance</code> was created by dividing it into three groups.</p>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p><br></p>
+</div>
+<div id="organ-a-simulated-dataset-assuming-the-workers-at-interventional-radiology-departments" class="section level3">
+<h3><code>organ</code>: a simulated dataset assuming the workers at interventional radiology departments</h3>
+<p>Unlike <code>nuclear</code>, <code>organ</code> assumes that people have been exposed to radiation over several times. There are 20 people in this data, 14 of whom are male and 6 are female. Also, this data includes job information of people (<code>occup</code>).</p>
+<table>
+<caption>people in organ dataset</caption>
+<thead>
+<tr class="header">
+<th align="center">ID</th>
+<th align="center">sex</th>
+<th align="center">birth</th>
+<th align="center">occup</th>
+<th align="center">ID</th>
+<th align="center">sex</th>
+<th align="center">birth</th>
+<th align="center">occup</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">ID01</td>
+<td align="center">male</td>
+<td align="center">1985</td>
+<td align="center">1</td>
+<td align="center">ID11</td>
+<td align="center">male</td>
+<td align="center">1965</td>
+<td align="center">6</td>
+</tr>
+<tr class="even">
+<td align="center">ID02</td>
+<td align="center">male</td>
+<td align="center">1960</td>
+<td align="center">1</td>
+<td align="center">ID12</td>
+<td align="center">male</td>
+<td align="center">1976</td>
+<td align="center">1</td>
+</tr>
+<tr class="odd">
+<td align="center">ID03</td>
+<td align="center">male</td>
+<td align="center">1979</td>
+<td align="center">6</td>
+<td align="center">ID13</td>
+<td align="center">female</td>
+<td align="center">1986</td>
+<td align="center">5</td>
+</tr>
+<tr class="even">
+<td align="center">ID04</td>
+<td align="center">male</td>
+<td align="center">1982</td>
+<td align="center">1</td>
+<td align="center">ID14</td>
+<td align="center">male</td>
+<td align="center">1983</td>
+<td align="center">1</td>
+</tr>
+<tr class="odd">
+<td align="center">ID05</td>
+<td align="center">male</td>
+<td align="center">1981</td>
+<td align="center">6</td>
+<td align="center">ID15</td>
+<td align="center">male</td>
+<td align="center">1980</td>
+<td align="center">1</td>
+</tr>
+<tr class="even">
+<td align="center">ID06</td>
+<td align="center">male</td>
+<td align="center">1966</td>
+<td align="center">6</td>
+<td align="center">ID16</td>
+<td align="center">female</td>
+<td align="center">1980</td>
+<td align="center">6</td>
+</tr>
+<tr class="odd">
+<td align="center">ID07</td>
+<td align="center">female</td>
+<td align="center">1980</td>
+<td align="center">1</td>
+<td align="center">ID17</td>
+<td align="center">male</td>
+<td align="center">1982</td>
+<td align="center">6</td>
+</tr>
+<tr class="even">
+<td align="center">ID08</td>
+<td align="center">female</td>
+<td align="center">1980</td>
+<td align="center">1</td>
+<td align="center">ID18</td>
+<td align="center">female</td>
+<td align="center">1968</td>
+<td align="center">5</td>
+</tr>
+<tr class="odd">
+<td align="center">ID09</td>
+<td align="center">male</td>
+<td align="center">1992</td>
+<td align="center">1</td>
+<td align="center">ID19</td>
+<td align="center">male</td>
+<td align="center">1965</td>
+<td align="center">1</td>
+</tr>
+<tr class="even">
+<td align="center">ID10</td>
+<td align="center">female</td>
+<td align="center">1984</td>
+<td align="center">4</td>
+<td align="center">ID20</td>
+<td align="center">male</td>
+<td align="center">1983</td>
+<td align="center">5</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(organ)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &#39;data.frame&#39;:    971 obs. of  11 variables:</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ ID           : chr  &quot;ID01&quot; &quot;ID01&quot; &quot;ID01&quot; &quot;ID01&quot; ...</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ sex          : chr  &quot;male&quot; &quot;male&quot; &quot;male&quot; &quot;male&quot; ...</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ birth        : num  1985 1985 1985 1985 1985 ...</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ exposure     : num  2011 2011 2011 2011 2013 ...</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ site         : chr  &quot;oesophagus&quot; &quot;kidney&quot; &quot;rectum&quot; &quot;thyroid&quot; ...</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ exposure_rate: chr  &quot;chronic&quot; &quot;chronic&quot; &quot;chronic&quot; &quot;chronic&quot; ...</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ dosedist     : chr  &quot;fixedvalue&quot; &quot;fixedvalue&quot; &quot;fixedvalue&quot; &quot;fixedvalue&quot; ...</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ dose1        : num  0.00195 0.00386 0.00386 0.0051 0.08936 ...</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ dose2        : num  NA NA NA NA NA NA NA NA NA NA ...</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ dose3        : num  NA NA NA NA NA NA NA NA NA NA ...</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ occup        : chr  &quot;1&quot; &quot;1&quot; &quot;1&quot; &quot;1&quot; ...</span></span></code></pre></div>
+<p>All values of <code>exposure_rate</code> are <code>chronic</code> and all values of <code>dosedist</code> are <code>fixedvalue</code>. The birth-year of people has a range from 1960 to 1992, and the exposed age is from 23 to 60 years old.</p>
+<p><code>sex</code>, <code>birth</code>, <code>site</code>, and <code>occup</code> were randomly selected, and <code>exposure</code> was generated before 2021 (This means that this data assumed that the current year is 2021). The exposure dose (<code>dose1</code>) was generated from the Gaussian mixture distribution, which mimics data of workers at interventional radiology departments in Korea (Lee, et al., 2021).</p>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p><br><br></p>
+</div>
+</div>
+<div id="reference" class="section level2">
+<h2>Reference</h2>
+<ol style="list-style-type: decimal">
+<li><p>De Gonzalez, A. B., et al. (2012). RadRAT: a radiation risk assessment tool for lifetime cancer risk projection. <em>Journal of Radiological Protection</em>, <strong>32(3)</strong>, 205.</p></li>
+<li><p>Lee, W. J., Bang, Y. J., Cha, E. S., Kim, Y. M., &amp; Cho, S. B. (2021). Lifetime cancer risks from occupational radiation exposure among workers at interventional radiology departments. <em>International Archives of Occupational and Environmental Health</em>, <strong>94(1)</strong>, 139-145.</p></li>
+</ol>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

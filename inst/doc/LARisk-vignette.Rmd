@@ -1,0 +1,380 @@
+---
+title: "LARisk: An R package for Lifetime Attributable Risk Calculation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{LARisk: An R package for Lifetime Attributable Risk Calculation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Introduction
+The R package, `LARisk`, to compute lifetime attributable risk (LAR) of radiation-induced cancer can be helpful with enhancement of the flexibility in research of projected risks of radiation-associated cancers. `LARisk` produces LAR estimates considering various options or arguments. In addition, it is possible to handle large-size data easily and compute LAR values by the group such as occupation, sex, age, group, etc., which can provide research topics for radiation-associated cancer risk. 
+
+
+<br>
+This document provides a detailed description of the `LARisk` package with some examples. If the package is installed, then we can load it into an R session by
+
+```{r setup}
+library(LARisk)
+```
+
+<br><br>
+
+## Arguments of the `LAR` function
+The `LARisk` package has 3 main functions for estimating lifetime attributable risk such as `LAR`, `LAR_batch` and `LAR_group`. `LAR` is a basic function to compute individual LAR values. And the others are extended functions to handle large batch data and calculate LAR estimates by group. The description of each function is in **Functions for estimating LAR**.
+
+```{r, eval=FALSE}
+LAR(data, basedata, sim=300, seed=99, current=as.numeric(substr(Sys.Date(),1,4)),
+    ci=0.9, weight=NULL, DDREF=TRUE, basepy=1e+05)
+```
+
+The following table shows the arguments of the `LAR` function.
+
+|Arguments|Description                                                                |
+|---------|---------------------------------------------------------------------------|
+|data     | A data frame containing demographic and exposure information              |
+|basedata | A list of data of lifetime and incidence rate tables                      |
+|sim      | A scalar for the number of iteration                                      |
+|seed     | A scalar for a random seed number                                         |
+|current  | A scalar for a current year                                               |
+|ci       | A scalar for confidence level to compute confidence intervals for LAR estimates           |
+|weight   | A list containing values on [0,1] to compute LAR values based on ERR and EAR models for each cancer site|
+|DDREF    | Logical. Whether apply the dose and dose-rate effectiveness factor for chronic exposure              |
+|basepy   | A scalar for the number of base person-years                              |
+
+### data
+The **data** should have some prerequisite information such as **sex** and birth year(s) (**birth**), exposure year (**exposure**), exposed dose distributions  (**dosedist**), fixed exposed radiation dose or parameters of dose distributions (**dose1**, **dose2**, **dose3**), sites where exposed (**site**), and exposure rate (**exposure_rate**). The name of variables in data should be written as expressed.
+
+The following table expresses the essential variables of the argument, **data**.
+
+| Variables     | Format                                                              |
+|---------------|----------------------------------------------------------------------------------|
+| sex           | one of the character strings '*male*' or '*female*'                               |
+| birth         | numeric                                                                          |
+| expposure     | numeric                                                                          |
+| site          | one of the chracter strings '*stomach*', '*colon*', '*liver*', '*lung*', '*breast*', '*ovary*', '*uterus*', '*prostate*', '*bladder*', '*brain/cns*', '*thyroid*', '*remainder*', '*oral*', '*oesophagus*', '*rectum*', '*gallbladder*', '*pancreas*', '*kidney*', '*leukemia*'.|
+| exposure_rate | one of the character strings '*chronic*' or '*acute*'                             |
+| dosedist      | one of the character strings '*fixedvalue*', '*lognormal*', '*normal*', '*triangular*', '*logtriangular*', '*uniform*', '*loguniform*' |
+| dose1         | numeric                                                                          |
+| dose2         | numeric                                                                          |
+| dose3         | numeric                                                                          |
+
+Because `LAR` is the function for each object, it is logically trivial that all **sex** and **birth** are same. Also, since the event dates of exposure must occur after the birth date, **exposure** should be larger than **birth**.
+
+<br>
+```{r, error=TRUE}
+ex_data <- data.frame(sex = 'male', birth = 1900, exposure = 1980,
+                  site = 'stomach', exposure_rate = "chronic",
+                  dosedist = 'fixedvalue', dose1 = 10, dose2=NA, dose3=NA)
+
+LAR(ex_data, basedata=list(life2010, incid2010)) ## error
+```
+The maximum age in the function is set as 100 years old. If the data contains a birth year which makes attained age over 100, it occurs error.
+
+<br>
+For **site**, we put the irradiated organ site or cancer-site. `LAR` estimates excess cases with the site as '*stomach*', '*colon*', '*liver*', '*lung*', '*breast*', '*ovary*', '*uterus*', '*prostate*', '*bladder*', '*brain/cns*', '*thyroid*', '*remainder*', '*oral*', '*oesophagus*', '*rectum*', '*gallbladder*', '*pancreas*', '*kidney*', '*leukemia*'. In particular, **site** that are applicable in `LAR` differ by gender(**sex**). For *male*, '*breast*', '*ovary*' and '*uterus*' are not allowed. Similarly, for *female*, '*prostate*' is not allowed.
+
+<br>
+In **dosedist**, we insert the distribution of the exposed dose. It can have '*fixedvalue*', '*lognormal*', '*normal*', '*triangular*', '*logtriangular*', '*uniform*' or '*loguniform*'. Each distribution demands essential parameters. For instance, if the exposed dose has a normal distribution with the mean of 2.3 and the standard deviation of 0.8, we input `dose1=2.3`, `dose2=0.8` and `dose3=NA`. If the dose has the fixed value of 3.2, we add values as`dose1=3.2`, `dose2=NA` and `dose3=NA`.
+
+| dose distribution | dose1   | dose2                        | dose3   |
+|:-----------------:|:-------:|:----------------------------:|:-------:|
+| fixedvalue        | value   | NA                           | NA      |
+| lognormal         | median  | geometric standard deviation | NA      |
+| normal            | mean    | standard deviation           | NA      |
+| triangular        | minimum | mode                         | maximum |
+| logtriangular     | minimum | mode                         | maximum |
+| uniform           | minimum | maximum                      | NA      |
+| loguniform        | minimum | maximum                      | NA      |
+
+<br>
+
+### basedata
+The `LAR` and the other extended functions need lifetime and cancer incidence rate tables. We put these tables to the argument '**basedata**' in which the first element is lifetime table and the second element is cancer incidence rate table.
+```{r, eval=FALSE}
+LAR(data,
+    basedata = list("the first is lifetime table", "the second is cancer incidence rate table"))
+```
+
+`LARisk` includes these tables which were made in 2010 and 2018 in Korea: `life2010`, `incid2010`, `life2018` and `incid2018`. Thus we can estimate the risk for the Korean population in 2010 or 2018 using these tables.
+
+If we want to estimate the risks of the other population, we'll need the lifetime and cancer incidence rate tables of the population. Similar to **data**, lifetime and cancer incidence rate tables must follow the specified format.
+
+```{r}
+head(life2010)      ## lifetime table of the Korean in 2010.
+```
+The columns of a lifetime table are consist of '*Age*', '*Prob_d_m*', and '*Prob_d_f*'. *Prob_d_m* and *Prob_d_f* are the probabilities of death of male and female, respectively. 
+
+```{r}
+head(incid2010)     ## cancer incidence rate table of the Korean in 2010.
+```
+Also, the columns of a cancer incidence rate table consist of '*Site*', '*Age*', '*Rate_m*', and '*Rate_f*'. *Rate_m* and *Rate_f* are incidence rates of each cancer site of male and female, respectively. The tables should have the range of age from 0 to 100 one by one.
+
+<br>
+
+### weight
+**weight** is used to estimate LAR through the weighted average of LAR estimates based on ERR and EAR models. It has the form of list whose name of elements is site to decide organ and values of them is for a specific value of the weight. For example, if a weight of stomach cancer is 0.5, run the below code.
+```{r, eval=FALSE}
+LAR(data, basedata, weight=list(stomach = 0.5))
+```
+`LAR` sets the default weight to 0.7 in most cancers. However, in lung cancer, the weight is 0.3, and cancers of breast and thyroid only have weights of 1 for LAR functions based on EAR or ERR models, respectively (see below table).
+
+| Cancer site | LAR_ERR   | LAR_EAR   | weight |
+|:-----------:|------:|------:|-------:|
+| Most cancer |  70\% |  30\% | 0.7    |
+| Lung        |  30\% |  70\% | 0.3    |
+| Breast      |   0\% | 100\% | 0.0    |
+| Thyroid     | 100\% |   0\% | 1.0    |
+| Gallbladder | 100\% |   0\% | 1.0    |
+| Brain/CNS   | 100\% |   0\% | 1.0    |
+
+### DDREF
+**DDREF** (dose and dose-rate effectiveness factor) is the logical option to select whether or not to consider DDREF in the LAR calculation. DDREF is to modify the effect of exposure, especially, for low-dose exposure. In addition, DDREF is considered differently according to exposure rate. However, if the site is leukemia, DDREF dose not apply even if `DDREF = TRUE`.
+```{r}
+ex_data <- data.frame(sex = 'male', birth = 1990, exposure = 2015,
+                  site = 'leukemia', exposure_rate = "chronic",
+                  dosedist = 'fixedvalue', dose1 = 10, dose2=NA, dose3=NA)
+
+LAR(ex_data, basedata=list(life2010, incid2010), DDREF=TRUE)
+LAR(ex_data, basedata=list(life2010, incid2010), DDREF=FALSE) ## the result are same
+```
+
+
+### other arguments
+**seed** is the random seed number. As long as the same seed number is provided, we obtain the same result in anytime.
+**sim** is the number of simulation runs. Note that as **sim** goes larger, the computation time takes longer although the simulation variation is getting smaller. i.e., even though **seed** is different, the large **sim** yields a similar outcome. In `LARisk`, `sim=300` is default.
+**basepy** is the baseline person year such as 10,000 person year or 100,000 person year. 
+
+```{r, eval=FALSE}
+LAR(data, basedata, seed=1111)    ## changing seed number, the result is also changed
+LAR(data, basedata, sim=1000)     ## the large 'sim' offers a stable simulation result
+LAR(data, basedata, basepy=1e+03) ## setting the baseline person-year is 1000
+```
+
+**current** is the year to set as the moment of estimation. The default value is set as the system time of the computer. Since it is considered as the current year, we can change the option if we want to set the current time into other years. It recommends that the value should be in form of a year in 4 digits. 
+```{r, eval=FALSE}
+LAR(data, basedata, current=2019) ## setting the current year is 2019
+```
+Changing the current time affects the estimation of future lifetime attributable risk and future baseline risk.
+
+<br>
+**ci** is the level of significance to provide the confidence interval of LAR estimates, expressed in number between 0 and 1. The default value is 0.9, in other words, the `LAR` function provides the confidence interval at 90\% level of significance in default setting.
+```{r, eval=FALSE}
+LAR(data, basedata, ci=0.8) ## setting the confidence level is 0.8
+```
+
+<br><br>
+
+## Functions for estimating LAR
+As mentioned above, the package `LARisk ` includes 3 main functions `LAR`, `LAR_batch`, and `LAR_group` that estimate the LAR values for various cases. These functions can be used for a variety of purposes by users. The functions give the three kinds of estimates such as lifetime risk, future risk and lifetime baseline risk. `LAR` and `F_LAR` are represented as LAR and future LAR estimates with confidence limits (lower and upper) for each cancer site, solid cancer and total.
+
+We will use the toy example data 'nuclear' in this section, which is simulated with the assumption that all people are exposed to radiation at the same time (Details on this data are in "**APPENDIX: Datasets in **`LARisk`").
+
+### `LAR`: the function of estimating LAR for one person
+`LAR` is the function to estimate LAR for one person. It returns an object of class `LAR`. `LAR` class contains the risks of the person, information of the person (gender and birth-year), and some options for calculating risks. The following is the table of components in the `LAR` object.
+
+| Values  | Description                                                                                     |
+|---------|-------------------------------------------------------------------------------------------------|
+| LAR     | Lifetime attributable risk (LAR) from the time of exposure to the end of the expected lifetime  |
+| F_LAR   | Future attributable risk from current to the expected lifetime                                  |
+| LBR     | Lifetime baseline risk                                                                          |
+| BFR     | Baseline future risk                                                                            |
+| LFR     | Lifetime fractional risk                                                                        |
+| TFR     | Total future risk                                                                               |
+| current | Current year                                                                                    |
+| ci      | Confidence level                                                                                |
+| pinfo   | Information of the person                                                                       |
+
+
+```{r}
+nuclear1 <- nuclear[nuclear$ID=="ID01",]
+
+print(nuclear1)
+
+LAR(nuclear1, basedata = list(life2010, incid2010))
+
+```
+The `LAR` object prints the total LAR , total future LAR, total baseline future risk, and total future risk. If you want the more detailed results, you can use the `summary` function.
+
+```{r}
+summary(LAR(nuclear1, basedata = list(life2010, incid2010)))
+```
+
+The `suumary` function provides the person's gender and year of birth, risks by cancer type, confidence levels, and current year. In `summary` results, the LAR tab includes site-specific LAR, lifetime baseline risk (LBR), and lifetime fractional risk (LFR). Also, the Future LAR tab contains site-specific future LAR, baseline future risk (BFR), and total future risk (TFR).
+
+<br>
+
+### `LAR_batch`: the function of estimating LAR for several people
+If you want to consider more than one person, you can use `LAR'. But, for large observations, the `LAR_batch` function is useful. Unlike `LAR`, it calculates each persons' risks after reading multiple people's data at once.
+
+Since data contains more than one person, the function requires an argument to distinguish each person. `pid` is the argument, which is a vector to distinguish each person in the dataset. For example, suppose that we want to calculate LAR estimates of several people in the `nuclear` dataset. Since the variable "ID" is the person ID for this data, we can estimate the LAR values as follows.
+```{r}
+ex_batch <- LAR_batch(nuclear, pid=nuclear$ID, basedata = list(life2010, incid2010))
+
+class(ex_batch)
+
+class(ex_batch[[1]])
+```
+
+The `LAR_batch` returns the `LAR_batch` class object. It is the form of the list of `LAR` class objects which names of elements are IDs for people, i.e., each element of `LAR_batch` class is `LAR` class object. Thus, printing the results of `LAR_batch` is similar to `LAR`.
+```{r}
+print(ex_batch, max.id=3)
+```
+If you want the minimum results, we can use the `print`. It also runs by default when simply calling the `LAR_batch` class object. Using the `max.id` option, you can control the maximum number of printing results (default is 50).
+
+<br>
+Similarly, using the `summary`, you can get more detailed results. The result of the function is the same as listing the summary of each person.
+```{r}
+summary(ex_batch, max.id=3)
+```
+
+
+<br>
+### `LAR_group`: the function of averaging estimated LAR by group
+The function `LAR_group` is averaging the calculated risks according to groups. It offers grouped LAR, grouped future LAR, and grouped baseline risk values based on values of simulation for each person. It provides each LAR value for each group, which makes new LAR values, and then these new LAR values are taken to present summarized LAR values for each group. 
+
+This function requires not only the value distinguishing the person but also the value for the group. `group` is the vector or list that groups the data. The function returns the `LAR_group` class object which is the form of a list of `LAR` class objects.
+
+<br>
+Suppose that we want to estimate the average LAR of the people in the `nuclear` dataset by the *distance*. Then we can put `group=nuclear$distnace` in `LAR_group`.
+
+```{r}
+ex_group1 <- LAR_group(nuclear, pid = nuclear$ID, group = nuclear$distance,
+                       basedata = list(life2010, incid2010))
+summary(ex_group1)
+```
+The result of the `LAR_group` is similar to those of `LAR_batch`. The difference is the **Group Information tab**, which provides the gender frequency table within the group and the average birth-year within the group, instead of each individuals' gender and birth-year. The risks are the estimates of the average LAR in groups.
+
+
+<br><br>
+
+## Write the result in a file
+`LARisk` includes the functions which write a result of `LAR`, `LAR_batch`, and `LAR_group`. `write_LAR` is the function that saves the `LAR` class family into a CSV file.
+```{r, eval=FALSE}
+write_LAR(x, filename)
+```
+In this function, `x` is an object that wants to save into a CSV file. When you put the file name or connection to write into `filename`, the object is saved there. Note that if there exists the csv file which has the same title with `filename`, it would be overlapped. Therefore, before deciding a `file name`, be cautious to check whether or not the name is duplicated. In the same way as above, the result from the LAR batch function can be saved as a CSV file.
+
+<br>
+If the object is a `LAR` class object, the format of the saved file is that:
+
+|           | Lower            | Mean             | Upper            | F.Lower            | F.Mean            | F.Upper            | LBR   | BFR   | LFR   | TFR   |
+|:---------:|:----------------:|:----------------:|:----------------:|:------------------:|:-----------------:|:------------------:|:-----:|:-----:|:-----:|:-----:|
+| site-name |                  |                  |                  |                    |                   |                    |       |       |       |       |
+| solid     |                  |                  |                  |                    |                   |                    |       |       |       |       |
+| total     |                  |                  |                  |                    |                   |                    |       |       |       |       |
+
+The function exports a table whose row is represented as site-names, solid, total, and whose column is the risks.
+
+<br>
+Since the `LAR_batch` class object is a list of `LAR` objects, it is difficult to export files in the same form as above. Thus, if the object's class is `LAR_batch`, the function saves a file whose values are represented in a horizontal way for each organ, solid, and total.
+
+Despite the case of the `LAR` function is somehow intuitive, the `LAR_batch` function is not simple. We make space for all organs, and values from the function are put in their own space. Therefore, there are 190 columns including the **person ID column (PID)**, and the number of rows depends on the number of ids in the data. The columns are ordered in (**LAR**)-(**Future LAR**)-(**Baseline Risk**)-(**Total Future Risk**) in general. In **LAR** and **Future LAR**, each is made up of lower limit, upper limit, and mean values, and for the **Baseline Risk**, it is made up of baseline risk of exposed age, the baseline risk of attained age, and **LFR**. The last part is the **total future risk** for each site. Hence, for each component, there are values of all-organ, all-solid-cancer, and each organ, i.e. 21 elements. So that, the file has somehow wide shape with 210 columns.
+
+If the class of the object is `LAR_group`, the format of the saved file is the same. In this case, the first column is **GROUP** instead of **PID**.
+
+
+<br><br>
+
+## Examples
+Now, consider the toy example of `organ` data. This data has 20 people which are exposed to radiation several times.
+```{r}
+head(organ)
+```
+
+Assume that we want to calculate the risks with the current year is 2021. In this example, we calculate the risks for the population in Korea, in 2018.
+
+First, the estimated risks of 'ID01' is that:
+
+```{r}
+organ1 <- organ[organ$ID=='ID01',]
+ex_organ1 <- LAR(organ1, baseda=list(life2018, incid2018), current=2021)
+
+ex_organ1
+```
+The estimated LAR of the person ID01 is **1.6981** with the 90\% confidence interval **(1.1149, 2.5132)**. The future risk is **1.6759** with the 90\% confidence interval **(1.1132, 2.4744)**
+
+```{r}
+summary(ex_organ1)
+```
+
+With `summary`, we can get a more detailed report of the result. By the result, the person *ID01* is a man born in 1985. This person was exposed radiation to thyroid, oesophagus, 'rectum', and kidney. Since `leukemia` is not included in this data, the result for `leukemia` is zero.
+
+
+<br><br>
+
+Consider the risks of the female / male groups of the `organ`.
+
+```{r}
+ex_organ2 <- LAR_group(organ, pid=organ$ID, group=organ$sex,
+                       basedata=list(life2018, incid2018), current=2021)
+
+summary(ex_organ2)
+```
+
+By the result, the estimated average lifetime risk of a female group is **11.1856 (9.5265, 13.5145)**. Similarly, the estimated average lifetime risk of a male group is **27.1674 (23.8700, 28.7939)**.
+
+<br>
+
+We can also set the variables for group. For example, we want the average risks of female and `occup` is 1
+
+```{r}
+ex_organ3 <- LAR_group(organ, pid=organ$ID, group=list(organ$sex, organ$occup),
+                       basedata=list(life2018, incid2018), current=2021)
+
+print(ex_organ3, max.id=3)
+```
+
+
+<br><br> 
+
+## APPENDIX: Datasets in `LARisk`
+The `LARisk` package include two toy example datasets, `nuclear` and `organ`. These datasets are simulated assuming two situation: One is that all people were exposed to radiation at the same time, and the other is that each person was exposed to radiation over a long period of time. Each data has 11 variables, including 9 essential variables for calculating the LAR.
+
+### `nuclear`: a simulated dataset assuming radioactive explosion
+`nuclear` was simulated assuming the scenario in which everyone is exposed to radiation at the same time. This data includes 20 people, who were exposed to radiation at the same time in 2011. The age exposed to radiation is from 3 to 81 years old, and there are 10 males and 10 females. All values of `exposure_rate` are `acute` and all values of `dosedist` are `fixedvalue`.
+
+```{r}
+str(nuclear)
+```
+`ID` is the variable that is used to identify the individual. We generated the `sex`, `birth`, and `site` fully random. And the exposure dose (`dose1`) was generated from the log-normal distribution, and a variable called `distance` was created by dividing it into three groups. 
+
+```{r, echo=FALSE}
+hist(nuclear$dose1, main="Exposure dose", xlab="", breaks=100)
+```
+
+<br>
+
+### `organ`: a simulated dataset assuming the workers at interventional radiology departments
+Unlike `nuclear`, `organ` assumes that people have been exposed to radiation over several times. There are 20 people in this data, 14 of whom are male and 6 are female. Also, this data includes job information of people (`occup`).
+```{r, echo=FALSE}
+ddd <- organ[!duplicated(organ$ID), c(1:3,11)]
+knitr::kable(cbind(ddd[1:10,], ddd[11:20,]),
+caption = "people in organ dataset", row.names = FALSE, align='c')
+```
+
+```{r}
+str(organ)
+```
+
+All values of `exposure_rate` are `chronic` and all values of `dosedist` are `fixedvalue`. The birth-year of people has a range from 1960 to 1992, and the exposed age is from 23 to 60 years old.
+
+`sex`, `birth`, `site`, and `occup` were randomly selected, and `exposure` was generated before 2021 (This means that this data assumed that the current year is 2021). The exposure dose (`dose1`) was generated from the Gaussian mixture distribution, which mimics data of workers at interventional radiology departments in Korea (Lee, et al., 2021).
+
+```{r, echo=FALSE}
+hist(organ$dose1, main="Exposure dose", xlab="", breaks=60)
+```
+
+<br><br>
+
+## Reference
+1. De Gonzalez, A. B., et al. (2012). RadRAT: a radiation risk assessment tool for lifetime cancer risk projection. *Journal of Radiological Protection*, **32(3)**, 205.
+
+1. Lee, W. J., Bang, Y. J., Cha, E. S., Kim, Y. M., & Cho, S. B. (2021). Lifetime cancer risks from occupational radiation exposure among workers at interventional radiology departments. *International Archives of Occupational and Environmental Health*, **94(1)**, 139-145.
